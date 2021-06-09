@@ -1,0 +1,5 @@
+com/teste/controllers/TesteModelController.class
+com/teste/services/TesteModelService.class
+com/teste/repository/TesteModelRepository.class
+com/teste/TesteApplication.class
+com/teste/models/TesteModel.class
