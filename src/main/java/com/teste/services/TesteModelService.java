@@ -2,9 +2,13 @@ package com.teste.services;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.teste.models.TesteModel;
 import com.teste.repository.TesteModelRepository;
@@ -13,26 +17,26 @@ import com.teste.repository.TesteModelRepository;
 public class TesteModelService {
 
 	@Autowired
-	private TesteModelRepository _repo;
+	private TesteModelRepository testeModelRepository;
 
-	public TesteModel add(TesteModel testeModel) {
-		return _repo.save(testeModel);
+	public TesteModel adicionar(TesteModel testeModel) {
+		return testeModelRepository.save(testeModel);
 	}
 
-	public List<TesteModel> getAll() {
-		return _repo.findAll();
+	public Long contarTodos(String beneficiario, BigDecimal valorItem) {
+		return testeModelRepository.countByBeneficiarioContainingIgnoreCase(beneficiario);
 	}
 
-	public List<TesteModel> getByBeneficiarioOrValorItem(String beneficiario, BigDecimal valorPedido) {
-		return _repo.findByBeneficiarioContainingIgnoreCase(beneficiario);
+	public Page<TesteModel> listarTodosComOuSemFiltro(String beneficiario, BigDecimal valorPedido, Pageable pageable) {
+		return testeModelRepository.findByBeneficiarioContainingIgnoreCase(beneficiario, pageable);
 	}
 
+	@Transactional
 	public void aprovar(List<TesteModel> testeModels) {
-		for (TesteModel testeModel : testeModels) {
-			TesteModel findTesteModelById = _repo.findById(testeModel.getId()).get();
-
-			findTesteModelById.setAprovacao(true);
-			_repo.save(findTesteModelById);
-		}
+		List<Long> ids = testeModels
+				.stream()
+				.map(p -> p.getId())
+				.collect(Collectors.toList());
+		testeModelRepository.updateFromAprovacao(ids);
 	}
 }

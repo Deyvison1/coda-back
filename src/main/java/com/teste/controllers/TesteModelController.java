@@ -4,6 +4,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,33 +20,34 @@ import org.springframework.web.bind.annotation.RestController;
 import com.teste.models.TesteModel;
 import com.teste.services.TesteModelService;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", exposedHeaders = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/teste")
 public class TesteModelController {
 
 	@Autowired
-	private TesteModelService _service;
+	private TesteModelService testeModelService;
 
-	@PostMapping("/add")
-	public ResponseEntity<TesteModel> add(@RequestBody TesteModel testeModel) {
-		return ResponseEntity.ok(_service.add(testeModel));
+	@PostMapping("/adicionar")
+	public ResponseEntity<TesteModel> adicionar(@RequestBody TesteModel testeModel) {
+		return ResponseEntity.ok(testeModelService.adicionar(testeModel));
 	}
 
 	@PostMapping("/aprova")
 	public void aprovarSelecionados(@RequestBody List<TesteModel> testeModels) {
-		_service.aprovar(testeModels);
+		testeModelService.aprovar(testeModels);
 	}
 
-	@GetMapping("/search")
-	public ResponseEntity<List<TesteModel>> findByBeneficiarioOrValorItem(
-			@RequestParam(required = false) String beneficiario,
-			@RequestParam(required = false) BigDecimal valorPedido) {
-		return ResponseEntity.ok(_service.getByBeneficiarioOrValorItem(beneficiario, valorPedido));
-	}
+	@GetMapping("/listarTodosComOuSemFiltro")
+	public ResponseEntity<List<TesteModel>> listarTodosComOuSemFiltro(
+			@RequestParam(required = false) String beneficiario, @RequestParam(required = false) BigDecimal valorPedido,
+			Pageable pageable) {
+		Page<TesteModel> testeModelsPagination = testeModelService.listarTodosComOuSemFiltro(beneficiario, valorPedido,
+				pageable);
+		final Long total = testeModelService.contarTodos(beneficiario, valorPedido);
 
-	@GetMapping("/getAll")
-	public ResponseEntity<List<TesteModel>> getAll() {
-		return ResponseEntity.ok(_service.getAll());
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("X_TOTAL_COUNT", String.valueOf(total));
+		return new ResponseEntity<List<TesteModel>>(testeModelsPagination.getContent(), headers, HttpStatus.OK);
 	}
 }
