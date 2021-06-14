@@ -8,15 +8,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import com.teste.models.TesteModel;
+import com.teste.models.Pedido;
 
-public interface TesteModelRepository extends JpaRepository<TesteModel, Long> {
+public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
-	Page<TesteModel> findByBeneficiarioContainingIgnoreCase(String beneficiario, Pageable pageable);
+	Page<Pedido> findByBeneficiarioContainingIgnoreCase(String beneficiario, Pageable pageable);
 
 	Long countByBeneficiarioContainingIgnoreCase(String beneficiario);
 
-	@Query(value = "update from TesteModel t set t.aprovacao = true where t.id in (:ids)")
+	@Query(value = "update from Pedido p set p.aprovacao = true where p.id in (:ids)")
 	@Modifying
 	void updateFromAprovacao(List<Long> ids);
 }

@@ -17,37 +17,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.teste.models.TesteModel;
-import com.teste.services.TesteModelService;
+import com.teste.models.Pedido;
+import com.teste.services.PedidoService;
 
 @CrossOrigin(origins = "*", exposedHeaders = "*", allowedHeaders = "*")
 @RestController
-@RequestMapping("/teste")
-public class TesteModelController {
+@RequestMapping("/pedido")
+public class PedidoController {
 
 	@Autowired
-	private TesteModelService testeModelService;
+	private PedidoService pedidoService;
 
 	@PostMapping("/adicionar")
-	public ResponseEntity<TesteModel> adicionar(@RequestBody TesteModel testeModel) {
-		return ResponseEntity.ok(testeModelService.adicionar(testeModel));
+	public ResponseEntity<Pedido> adicionar(@RequestBody Pedido testeModel) {
+		return ResponseEntity.ok(pedidoService.adicionar(testeModel));
 	}
 
 	@PostMapping("/aprova")
-	public void aprovarSelecionados(@RequestBody List<TesteModel> testeModels) {
-		testeModelService.aprovar(testeModels);
+	public void aprovarSelecionados(@RequestBody List<Pedido> testeModels) {
+		pedidoService.aprovar(testeModels);
 	}
 
 	@GetMapping("/listarTodosComOuSemFiltro")
-	public ResponseEntity<List<TesteModel>> listarTodosComOuSemFiltro(
-			@RequestParam(required = false) String beneficiario, @RequestParam(required = false) BigDecimal valorPedido,
-			Pageable pageable) {
-		Page<TesteModel> testeModelsPagination = testeModelService.listarTodosComOuSemFiltro(beneficiario, valorPedido,
+	public ResponseEntity<List<Pedido>> listarTodosComOuSemFiltro(@RequestParam(required = false) String beneficiario,
+			@RequestParam(required = false) BigDecimal valorPedido, Pageable pageable) {
+		Page<Pedido> testeModelsPagination = pedidoService.listarTodosComOuSemFiltro(beneficiario, valorPedido,
 				pageable);
-		final Long total = testeModelService.contarTodos(beneficiario, valorPedido);
+		final Long total = pedidoService.contarTodos(beneficiario, valorPedido);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X_TOTAL_COUNT", String.valueOf(total));
-		return new ResponseEntity<List<TesteModel>>(testeModelsPagination.getContent(), headers, HttpStatus.OK);
+		return new ResponseEntity<List<Pedido>>(testeModelsPagination.getContent(), headers, HttpStatus.OK);
 	}
 }

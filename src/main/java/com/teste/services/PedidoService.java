@@ -10,16 +10,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.teste.models.TesteModel;
-import com.teste.repository.TesteModelRepository;
+import com.teste.models.Pedido;
+import com.teste.repository.PedidoRepository;
 
 @Service
-public class TesteModelService {
+public class PedidoService {
 
 	@Autowired
-	private TesteModelRepository testeModelRepository;
+	private PedidoRepository testeModelRepository;
 
-	public TesteModel adicionar(TesteModel testeModel) {
+	public Pedido adicionar(Pedido testeModel) {
 		return testeModelRepository.save(testeModel);
 	}
 
@@ -27,12 +27,12 @@ public class TesteModelService {
 		return testeModelRepository.countByBeneficiarioContainingIgnoreCase(beneficiario);
 	}
 
-	public Page<TesteModel> listarTodosComOuSemFiltro(String beneficiario, BigDecimal valorPedido, Pageable pageable) {
+	public Page<Pedido> listarTodosComOuSemFiltro(String beneficiario, BigDecimal valorPedido, Pageable pageable) {
 		return testeModelRepository.findByBeneficiarioContainingIgnoreCase(beneficiario, pageable);
 	}
 
 	@Transactional
-	public void aprovar(List<TesteModel> testeModels) {
+	public void aprovar(List<Pedido> testeModels) {
 		List<Long> ids = testeModels
 				.stream()
 				.map(p -> p.getId())
