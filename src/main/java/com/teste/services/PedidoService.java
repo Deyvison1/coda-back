@@ -20,31 +20,31 @@ import javassist.NotFoundException;
 public class PedidoService {
 
 	@Autowired
-	private PedidoRepository testeModelRepository;
+	private PedidoRepository pedidoRepository;
 
 	public Pedido adicionar(Pedido pedido) {
 		pedido.setDataSolicitacao(LocalDateTime.now());
-		return testeModelRepository.save(pedido);
+		return pedidoRepository.save(pedido);
 	}
 
 	public Pedido listarPeloId(Long id) throws NotFoundException {
-		return testeModelRepository.findById(id).orElseThrow(() ->  new NotFoundException("Nenhum registro encontrado"));
+		return pedidoRepository.findById(id).orElseThrow(() ->  new NotFoundException("Nenhum registro encontrado"));
 	}
 	
 	public Long contarTodos(String beneficiario, BigDecimal valorItem) {
-		return testeModelRepository.countByBeneficiarioContainingIgnoreCase(beneficiario);
+		return pedidoRepository.countByBeneficiarioContainingIgnoreCase(beneficiario);
 	}
 
 	public Page<Pedido> listarTodosComOuSemFiltro(String beneficiario, BigDecimal valorPedido, Pageable pageable) {
-		return testeModelRepository.findByBeneficiarioContainingIgnoreCase(beneficiario, pageable);
+		return pedidoRepository.findByBeneficiarioContainingIgnoreCase(beneficiario, pageable);
 	}
 
 	@Transactional
-	public void aprovar(List<Pedido> testeModels) {
-		List<Long> ids = testeModels
+	public void aprovar(List<Pedido> pedidos) {
+		List<Long> ids = pedidos
 				.stream()
 				.map(p -> p.getId())
 				.collect(Collectors.toList());
-		testeModelRepository.updateFromAprovacao(ids);
+		pedidoRepository.updateFromAprovacao(ids);
 	}
 }

@@ -32,13 +32,13 @@ public class PedidoController {
 	private PedidoService pedidoService;
 
 	@PostMapping("/adicionar")
-	public ResponseEntity<Pedido> adicionar(@RequestBody Pedido testeModel) {
-		return ResponseEntity.ok(pedidoService.adicionar(testeModel));
+	public ResponseEntity<Pedido> adicionar(@RequestBody Pedido pedido) {
+		return ResponseEntity.ok(pedidoService.adicionar(pedido));
 	}
 
 	@PostMapping("/aprova")
-	public void aprovarSelecionados(@RequestBody List<Pedido> testeModels) {
-		pedidoService.aprovar(testeModels);
+	public void aprovarSelecionados(@RequestBody List<Pedido> pedidos) {
+		pedidoService.aprovar(pedidos);
 	}
 	
 	@GetMapping("/listarPeloId/{id}")
@@ -55,12 +55,12 @@ public class PedidoController {
 	@GetMapping("/listarTodosComOuSemFiltro")
 	public ResponseEntity<List<Pedido>> listarTodosComOuSemFiltro(@RequestParam(required = false) String beneficiario,
 			@RequestParam(required = false) BigDecimal valorPedido, Pageable pageable) {
-		Page<Pedido> testeModelsPagination = pedidoService.listarTodosComOuSemFiltro(beneficiario, valorPedido,
+		Page<Pedido> pedidoPagination = pedidoService.listarTodosComOuSemFiltro(beneficiario, valorPedido,
 				pageable);
 		final Long total = pedidoService.contarTodos(beneficiario, valorPedido);
 
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("X_TOTAL_COUNT", String.valueOf(total));
-		return new ResponseEntity<List<Pedido>>(testeModelsPagination.getContent(), headers, HttpStatus.OK);
+		return new ResponseEntity<List<Pedido>>(pedidoPagination.getContent(), headers, HttpStatus.OK);
 	}
 }

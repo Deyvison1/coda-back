@@ -15,7 +15,7 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	Page<Pedido> findByBeneficiarioContainingIgnoreCase(String beneficiario, Pageable pageable);
 
 	Long countByBeneficiarioContainingIgnoreCase(String beneficiario);
-
+	
 	@Query(value = "update from Pedido p set p.aprovacao = true where p.id in (:ids)")
 	@Modifying
 	void updateFromAprovacao(List<Long> ids);
