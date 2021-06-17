@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.teste.models.Pedido;
 import com.teste.services.PedidoService;
+
+import javassist.NotFoundException;
 
 @CrossOrigin(origins = "*", exposedHeaders = "*", allowedHeaders = "*")
 @RestController
@@ -36,6 +39,17 @@ public class PedidoController {
 	@PostMapping("/aprova")
 	public void aprovarSelecionados(@RequestBody List<Pedido> testeModels) {
 		pedidoService.aprovar(testeModels);
+	}
+	
+	@GetMapping("/listarPeloId/{id}")
+	private ResponseEntity<Pedido> listarPeloId(@PathVariable Long id) throws NotFoundException, Exception { 
+		try {
+			return ResponseEntity.ok(pedidoService.listarPeloId(id));
+		} catch (NotFoundException e) {
+			throw new NotFoundException(e.getMessage());
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
 	}
 
 	@GetMapping("/listarTodosComOuSemFiltro")

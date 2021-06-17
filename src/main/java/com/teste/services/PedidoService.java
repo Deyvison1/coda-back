@@ -1,6 +1,7 @@
 package com.teste.services;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,16 +14,23 @@ import org.springframework.transaction.annotation.Transactional;
 import com.teste.models.Pedido;
 import com.teste.repository.PedidoRepository;
 
+import javassist.NotFoundException;
+
 @Service
 public class PedidoService {
 
 	@Autowired
 	private PedidoRepository testeModelRepository;
 
-	public Pedido adicionar(Pedido testeModel) {
-		return testeModelRepository.save(testeModel);
+	public Pedido adicionar(Pedido pedido) {
+		pedido.setDataSolicitacao(LocalDateTime.now());
+		return testeModelRepository.save(pedido);
 	}
 
+	public Pedido listarPeloId(Long id) throws NotFoundException {
+		return testeModelRepository.findById(id).orElseThrow(() ->  new NotFoundException("Nenhum registro encontrado"));
+	}
+	
 	public Long contarTodos(String beneficiario, BigDecimal valorItem) {
 		return testeModelRepository.countByBeneficiarioContainingIgnoreCase(beneficiario);
 	}
